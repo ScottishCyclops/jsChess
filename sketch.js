@@ -77,7 +77,6 @@ function setup()
 
     board = new Board(blackPieces,whitePieces);
 
-
     //black pieces
     let brook1 =   new Rook  (board.cells[0][0],0,brookImg);
     let bknight1 = new Knight(board.cells[1][0],0,bknightImg);
