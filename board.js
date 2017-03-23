@@ -55,7 +55,10 @@ class Board
             }
         }
         this.selectedPiece = null;
+    }
 
+    getKings()
+    {
         //getting the kings
         this.whitePieces.forEach(function(piece) {
             if(piece instanceof King)
@@ -100,14 +103,7 @@ class Board
      */
     getFocussedCell()
     {
-        for(let x = 0; x < board.cells.length; x++)
-        {
-            for(let y = 0; y < board.cells[0].length; y++)
-            {
-                if(this.cells[x][y].isInFocus())
-                    return this.cells[x][y];
-            }
-        }
+        return this.cells[localMouseX()][localMouseY()];
     }
 
     /**
@@ -208,14 +204,94 @@ class Board
         this.selectedPiece = null;
     }
 
+    checkCheck()
+    {
+        //check check for black king
+        let blackCheck = false;
+        this.whitePieces.forEach(function(piece) {
+            piece.getValidCells().forEach(function(cell) {
+                if(cell == this.blackKing.cell)
+                    blackCheck = true;
+            }, this);
+        }, this);
+        this.blackKing.check = blackCheck;
+
+        //check check for white king
+        let whiteCheck = false;
+        this.blackPieces.forEach(function(piece) {
+            piece.getValidCells().forEach(function(cell) {
+                if(cell == this.whiteKing.cell)
+                    whiteCheck = true;
+            }, this);
+        }, this);
+        this.whiteKing.check = whiteCheck;
+    }
+
+    checkCheckMate()
+    {
+        if(this.blackKing.check)
+        {
+            //check check for white king
+            let blackCheckMate = true;
+            
+            //foreach valid cells of the king
+            this.blackKing.getValidCells().forEach(function(kingCell) {
+                let validCell = false;
+                //foreach ennemy pieces
+                this.whitePieces.forEach(function(piece) {
+                    //foreach valid cells of ennemy pieces
+                    piece.getValidCells().forEach(function(pieceCell) {
+                        //if the cell isn't found in any of the ennemy valid cells, it stays false
+                        if(pieceCell == kingCell)
+                            validCell = true;
+                    }, this);
+                    blackCheckMate = validCell;
+                }, this);
+            }, this);
+
+            this.blackKing.checkMate = blackCheckMate;
+        }
+
+       if(this.whiteKing.check)
+        {
+            //check check for white king
+            let whiteCheckMate = true;
+            
+            //foreach valid cells of the king
+            this.whiteKing.getValidCells().forEach(function(kingCell) {
+                let validCell = false;
+                //foreach ennemy pieces
+                this.blackPieces.forEach(function(piece) {
+                    //foreach valid cells of ennemy pieces
+                    piece.getValidCells().forEach(function(pieceCell) {
+                        //if the cell isn't found in any of the ennemy valid cells, it stays false
+                        if(pieceCell == kingCell)
+                            validCell = true;
+                    }, this);
+                    whiteCheckMate = validCell;
+                }, this);
+            }, this);
+
+            this.whiteKing.checkMate = whiteCheckMate;
+        }
+    }
+
     checkWinner()
     {
+
+        if(this.whiteKing.checkMate)
+            return 0;
+        else if(this.blackKing.checkMate)
+            return 1;
+        else
+            return -1;
         /*
+        
         if(this.blackPieces.length == 0)
             return 1;
         else if(this.whitePieces.length == 0)
             return 0;
-            */
+            
 
         let whiteKing = false;
         this.whitePieces.forEach(function(piece) {
@@ -236,5 +312,7 @@ class Board
             return 1;
         else
             return -1;
+                */
     }
+
 }

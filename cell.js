@@ -60,9 +60,4 @@ class Cell
         //text(this.team,this.absoluteX,this.absoluteY+size-15);
 
     }
-
-    isInFocus()
-    {
-        return dist(mouseX,mouseY,this.centerX,this.centerY) < this.size/2;
-    }
 }

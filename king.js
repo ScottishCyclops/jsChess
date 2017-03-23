@@ -27,6 +27,7 @@ class King extends Piece
     {
         super(cell,team,texture)
         this.checkMate = false;
+        this.check = false;
     }
 
     getValidCells()

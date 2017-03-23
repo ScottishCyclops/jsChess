@@ -20,8 +20,8 @@
 const cols = 8;
 const rows = 8;
 const size = 40;
-const textHeight = (rows+1)*size;
-const textPad = size;
+const textHeight = (rows+.5)*size;
+const textPad = size/3;
 
 const boardBlack = "#d18b47";
 const boardWhite = "#ffce9e";
@@ -68,8 +68,8 @@ function preload()
 
 function setup()
 {
-    createCanvas(innerWidth,innerHeight);
-    background(255);
+    createCanvas(rows*size,(cols+1)*size);
+    background(0);
     frameRate(60);
 
     blackPieces = new Array();
@@ -151,6 +151,8 @@ function setup()
     board.whitePieces.push(wpawn6);
     board.whitePieces.push(wpawn7);
     board.whitePieces.push(wpawn8);
+
+    board.getKings();
     
     clicked = false;
 
@@ -179,12 +181,12 @@ function draw()
     //informations
     switch(board.checkWinner())
     {
-        case 0: text("Black won !",textPad,textHeight); break;
-        case 1: text("White won !",textPad,textHeight); break;
+        case 0: text("White king is checkmated!",textPad,textHeight); break;
+        case 1: text("Black king is checkmated!",textPad,textHeight); break;
         case -1: switch(turn)
         {
-            case 0: text("Black turn !",textPad,textHeight); break;
-            case 1: text("White turn !",textPad,textHeight); break;
+            case 0: text("Black turn",textPad,textHeight); break;
+            case 1: text("White turn",textPad,textHeight); break;
         }; break;
     }
 }
@@ -216,6 +218,8 @@ function mousePressed()
 
                     //tour adverse
                     turn == 1 ? turn = 0 : turn = 1;
+                    board.checkCheck();
+                    board.checkCheckMate();
                 }
             }
         }
@@ -235,4 +239,22 @@ function D2Array(sizeX,sizeY)
         a[i] = new Array(sizeY);
     }    
     return a;
+}
+
+function localMouseX()
+{
+    let local = int(map(mouseX,0,size*cols,0,cols));    
+
+    if(local >= cols)
+        local = cols-1;
+    return local;
+}
+
+function localMouseY()
+{
+    let local = int(map(mouseY,0,size*rows,0,rows));
+
+    if(local >= rows)
+        local = rows-1;
+    return local;
 }
